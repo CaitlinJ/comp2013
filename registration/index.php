@@ -20,6 +20,7 @@
 <p>Fill in your name and email address, then click <strong>Submit</strong> to register.</p>
 <form method="post" action="index.php" enctype="multipart/form-data" >
       Name  <input type="text" name="name" id="name"/></br>
+      Company Name<input type="text" name="company_name" id="company_name"/></br>
       Email <input type="text" name="email" id="email"/></br>
       <input type="submit" name="submit" value="Submit" />
 </form>
@@ -43,15 +44,17 @@
     if(!empty($_POST)) {
     try {
         $name = $_POST['name'];
+        $company_name=$_POST['company_name'];
         $email = $_POST['email'];
         $date = date("Y-m-d");
         // Insert data
-        $sql_insert = "INSERT INTO registration_tbl (name, email, date) 
-                   VALUES (?,?,?)";
+        $sql_insert = "INSERT INTO registration_tbl (name,company_name, email, date) 
+                   VALUES (?,?,?,?)";
         $stmt = $conn->prepare($sql_insert);
         $stmt->bindValue(1, $name);
-        $stmt->bindValue(2, $email);
-        $stmt->bindValue(3, $date);
+        $stmt->bindValue(2, $company_name);
+        $stmt->bindValue(3, $email);
+        $stmt->bindValue(4, $date);
         $stmt->execute();
     }
     catch(Exception $e) {
@@ -67,10 +70,12 @@
         echo "<h2>People who are registered:</h2>";
         echo "<table>";
         echo "<tr><th>Name</th>";
+        echo "<th>Company Name</th>";
         echo "<th>Email</th>";
         echo "<th>Date</th></tr>";
         foreach($registrants as $registrant) {
             echo "<tr><td>".$registrant['name']."</td>";
+            echo "<td>".$registrant['company_name']."</td>";
             echo "<td>".$registrant['email']."</td>";
             echo "<td>".$registrant['date']."</td></tr>";
         }
